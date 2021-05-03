@@ -9,6 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
 /**
  * @Route("/post")
@@ -20,9 +23,8 @@ class PostController extends AbstractController
      */
     public function index(PostRepository $postRepository): Response
     {
-        return $this->render('post/index.html.twig', [
-            'posts' => $postRepository->findAll(),
-        ]);
+        $post=$postRepository->findOne();
+        return $this->show($post, $postRepository);
     }
 
     /**
@@ -30,20 +32,42 @@ class PostController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $post = new Post();
-        $form = $this->createForm(PostType::class, $post);
+        $currentUser=$this->getUser();
+        if (!$currentUser) {
+            return $this->redirectToRoute('app_login');
+        }
+        
+        $form = $this->createFormBuilder()
+            ->add('title')
+            ->add('url_image', UrlType::class)
+            ->add('content', TextareaType::class)
+            ->add('Crear', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-primary float-rigth'
+                ]
+            ])
+            ->getForm();
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $post = new Post();
+            $post->setAuthor($currentUser);
+            $post->setCreationDate(new \DateTime());
+            $post->setTitle($data['title']);
+            $post->setUrlImg($data['url_image']);
+            $post->setContent($data['content']);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
 
             return $this->redirectToRoute('post_index');
         }
-        error_log('test');
+        
         return $this->render('post/new.html.twig', [
-            'post' => $post,
             'form' => $form->createView(),
         ]);
     }
@@ -51,9 +75,10 @@ class PostController extends AbstractController
     /**
      * @Route("/{id}", name="post_show", methods={"GET"})
      */
-    public function show(Post $post): Response
+    public function show(Post $post=null, PostRepository $postRepository): Response
     {
         return $this->render('post/show.html.twig', [
+            'posts' => $postRepository->findAll(),
             'post' => $post,
         ]);
     }

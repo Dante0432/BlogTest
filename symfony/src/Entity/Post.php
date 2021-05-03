@@ -33,7 +33,7 @@ class Post
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
     private $url_img;
 
