@@ -154,7 +154,8 @@ class User implements UserInterface
      */
      public function __toString(){
         // para mostrar el nombre de la categoría en la selección
-        return $this->name;
+        $fullname="{$this->name} {$this->lastname}";
+        return $fullname;
         // para mostrar el id de la categoría en la selección
         // return $this->id;
     }

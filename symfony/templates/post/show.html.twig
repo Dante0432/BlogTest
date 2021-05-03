@@ -16,20 +16,36 @@
                         {% endfor %}
                     </ul>
                 </div>
-                <div class="col-sm col-4">
-                    
-                    <img src={{ post.urlImg }}/>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-4 "></div>
+                        <div class="col-4 ">
+                            <img class="img-thumbnail img-fluid" src={{ post.urlImg }}/>
+                        </div>
+                        <div class="col-4 "></div>
+                    </div>
+                    <div class="row">
+                        <p class="fs-6 fw-ligth">{{ post.author }} / {{post.creationDate|date("m/d/Y") }} </p>
+                    </div>
+                    <div class="row">
+                        <div class="p-3 border bg-light">{{ post.content }}</div>
+                        {% if (app.user) and (post.author.id == app.user.id) %}
+                        <a class="btn btn-success" href="{{ path('post_edit', {'id': post.id}) }}">Editar</a>
+                        {% endif %}
+                    </div>
                 </div>
-                </div>
+                
         </div>
-        <a class="btn btn-success" href="{{ path('post_edit', {'id': post.id}) }}">Editar</a>    
-{% else %}
     <div class="container text-center">
-        <h1>Parece que aun no hay entradas, se el primero.</h1>
-        <a class="btn btn-success" href="{{ path('post_new') }}">Crear una nueva entrada</a>
+    {% else %}
+        <div class="row">
+            <h1>Parece que aun no hay entradas, se el primero.</h1>
+        </div>
+    {% endif %}
+        <div class="row p-3">
+            <a class="btn btn-primary col-3" href="{{ path('post_new') }}">Crear una nueva entrada</a>
+        </div>
     </div>
-{% endif %}
-
 {% endblock %}
 
 

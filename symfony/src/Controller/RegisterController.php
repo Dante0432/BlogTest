@@ -9,7 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Validator\Constraints\Length;
 
 
 class RegisterController extends AbstractController
@@ -22,23 +24,24 @@ class RegisterController extends AbstractController
         $form = $this->createFormBuilder()
                 ->add('name')
                 ->add('lastname')
-                ->add('email')
+                ->add('email',EmailType::class)
                 ->add('password', RepeatedType::class, [
                     'type' => PasswordType::Class,
                     'required' => true,
                     'first_options' => ['label' => 'Password'],
-                    'second_options' => ['label' => 'Confirm Password']
+                    'second_options' => ['label' => 'Confirm Password'],
+                    'constraints' => new Length(['min' => 6])
                 ])
                 ->add('register', SubmitType::class, [
                     'attr' => [
-                        'class' => 'btn btn-primary float-rigth'
+                        'class' => 'btn btn-primary float-rigth mt-3'
                     ]
                 ])
                 ->getForm();
         
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid()){
-                $data = $form->getData();
+               
 
                 $user = new User();
                 $user->setName($data['name']);

@@ -38,12 +38,12 @@ class PostController extends AbstractController
         }
         
         $form = $this->createFormBuilder()
-            ->add('title')
-            ->add('url_image', UrlType::class)
-            ->add('content', TextareaType::class)
+            ->add('title',null,['label' => 'Titulo'])
+            ->add('url_image', UrlType::class,['label' => 'Url imagen'])
+            ->add('content', TextareaType::class,['label' => 'Contenido'])
             ->add('Crear', SubmitType::class, [
                 'attr' => [
-                    'class' => 'btn btn-primary float-rigth'
+                    'class' => 'btn btn-primary float-rigth mt-1'
                 ]
             ])
             ->getForm();
@@ -88,11 +88,34 @@ class PostController extends AbstractController
      */
     public function edit(Request $request, Post $post): Response
     {
-        $form = $this->createForm(PostType::class, $post);
-        $form->handleRequest($request);
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+        $form = $this->createFormBuilder()
+        ->add('title',null,['label' => 'Titulo', 'data' => "{$post->getTitle()}"])
+        ->add('url_image', UrlType::class,['label' => 'Url Imagen', 'data' => "{$post->getUrlImg()}" ],)
+        ->add('content', TextareaType::class,['label' => 'Contenido', 'data' => "{$post->getContent()}"])
+        ->add('Actualizar', SubmitType::class, [
+            'attr' => [
+                'class' => 'btn btn-primary float-rigth mt-1'
+            ]
+        ])
+        ->getForm();
 
+        $form->handleRequest($request);
+                
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            
+            $data = $form->getData();
+           
+            
+            $entityManager = $this->getDoctrine()->getManager();
+            $post = $entityManager->getRepository(Post::class)->find($post->getId());
+
+            $post->setTitle($data['title']);
+            $post->setUrlImg($data['url_image']);
+            $post->setContent($data['content']);
+            $entityManager->flush();
 
             return $this->redirectToRoute('post_index');
         }
@@ -108,6 +131,9 @@ class PostController extends AbstractController
      */
     public function delete(Request $request, Post $post): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
         if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($post);

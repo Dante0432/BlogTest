@@ -32,6 +32,11 @@ class Contact
      */
     private $message;
 
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $creation_date;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +74,18 @@ class Contact
     public function setMessage(string $message): self
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function getCreationDate(): ?\DateTimeInterface
+    {
+        return $this->creation_date;
+    }
+
+    public function setCreationDate(\DateTimeInterface $creation_date): self
+    {
+        $this->creation_date = $creation_date;
 
         return $this;
     }
