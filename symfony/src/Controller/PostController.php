@@ -41,7 +41,7 @@ class PostController extends AbstractController
             ->add('title',null,['label' => 'Titulo'])
             ->add('url_image', UrlType::class,['label' => 'Url imagen'])
             ->add('content', TextareaType::class,['label' => 'Contenido'])
-            ->add('Crear', SubmitType::class, [
+            ->add('Publicar', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary float-rigth mt-1'
                 ]
