@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% block title %} Posts {% endblock %}
+    {% block body %}
+    {% set borderColor = '' %}
+    {% if post %}
+        <div class="container">
+            <div class="row">    
+                <h2>{{ post.title }}</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm overflow-auto">
+                    <ul class="list-group">
+                        {% for listPost in posts %}
+                        {% if listPost.id == post.id %} 
+                            {% set borderColor = 'border-dark' %} 
+                        {% else %}
+                            {% set borderColor = '' %}
+                        {% endif %}
+                        <a class="btn" href="{{ path('post_show', {'id': listPost.id}) }}">
+                            <li class="list-group-item rounded-3 border border-3 {{ borderColor }}" aria-current="true">{{listPost.title}}</li>
+                        </a>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-4 "></div>
+                        <div class="col-4 ">
+                            <img class="img-thumbnail img-fluid" src={{ post.urlImg }}/>
+                        </div>
+                        <div class="col-4 "></div>
+                    </div>
+                    <div class="row">
+                        <p class="fs-6 fw-ligth">{{ post.author }} / {{post.creationDate|date("m/d/Y") }} </p>
+                    </div>
+                    <div class="row">
+                        <div class="p-3 border bg-light">{{ post.content }}</div>
+                        {% if (app.user) and (post.author.id == app.user.id) %}
+                        <a class="btn btn-success" href="{{ path('post_edit', {'id': post.id}) }}">Editar</a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+        </div>
+    <div class="container text-center">
+    {% else %}
+        <div class="row">
+            <h1>Parece que aun no hay publicaciones, se el primero.</h1>
+        </div>
+    {% endif %}
+        <div class="container p-3 text-center">
+            <a class="btn btn-primary col-3" href="{{ path('post_new') }}">Publicar</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+  

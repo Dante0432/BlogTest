@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ingreso{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="row justify-content-md-center text-center">
+    <div class="col col-lg-6">
+      <form method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <label for="inputEmail">Email</label>
+        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
+        <label for="inputPassword">Password</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" required>
+
+        <input type="hidden" name="_csrf_token"
+              value="{{ csrf_token('authenticate') }}"
+        >
+        <button class="btn btn-lg btn-primary mt-3" type="submit">
+            Ingresar
+        </button>
+        <a class="btn btn-lg btn-success mt-3" href="{{'register'}}" type="submit">
+            Registrarse
+        </a>
+      </form>
+    </div>    
+  </div>
+</div>
+{% endblock %}

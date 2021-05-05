@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contacto{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col col-lg-6">
+        {% if emailSend %}
+        <div class="alert alert-success" role="alert">
+            Hemos recibido su mensaje, lo estaremos contactando lo mas pronto posible.
+        </div>
+        {% endif %}
+        {{ form(form)}}
+    </div>
+  </div>
+</div>        
+{% endblock %}
