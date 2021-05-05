@@ -86,7 +86,7 @@ class PostController extends AbstractController
     /**
      * @Route("/{id}/edit", name="post_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Post $post): Response
+    public function edit(Request $request, Post $post, PostRepository $postRepository): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');

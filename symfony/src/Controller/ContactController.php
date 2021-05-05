@@ -35,7 +35,7 @@ class ContactController extends AbstractController
         $data = $form->getData();
 
         $contact = new Contact();
-        $contact->setName('name');
+        $contact->setName($data['name']);
         $contact->setCreationDate(new \DateTime());
         $contact->setEmail($data['email']);
         $contact->setMessage($data['message']);
@@ -44,13 +44,25 @@ class ContactController extends AbstractController
         $entityManager->persist($contact);
         $entityManager->flush();
 
-        return $this->redirectToRoute('index');
+        $this->getRedirectLater($this->generateUrl('index'));
+        return $this->render('contact/index.html.twig', [
+            'emailSend' => true,
+            'form' => $form->createView(),
+        ]);
     }
     
-        return $this->render('post/new.html.twig', [
+        return $this->render('contact/index.html.twig', [
+            'emailSend' => false,
             'form' => $form->createView(),
         ]);
 
 
     }
+    private function getRedirectLater($url, $seconds=5)
+{
+    $response = new Response;
+    $response->headers->set('Refresh', $seconds.'; url='. $url);
+
+    return $response;
+}
 }
